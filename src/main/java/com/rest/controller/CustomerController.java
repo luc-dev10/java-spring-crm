@@ -19,13 +19,13 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("")
-    public ResponseEntity<List<Customer>> getCustomers() {
+    public ResponseEntity<List<Customer>> readCustomers() {
         List<Customer> customerList = customerService.getCustomers();
         return new ResponseEntity<>(customerList, HttpStatus.OK);
     }
 
     @GetMapping("{customerId}")
-    public ResponseEntity<Customer> getCustomers(@PathVariable int customerId) {
+    public ResponseEntity<Customer> readCustomer(@PathVariable int customerId) {
         Customer customer = customerService.getCustomer(customerId);
         if (customer == null)
             throw new CustomerNotFoundException("Customer not found.");
@@ -34,9 +34,25 @@ public class CustomerController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Customer> postCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
         customerService.addCustomer(customer);
         return new ResponseEntity<>(customer, HttpStatus.OK);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) {
+        Customer customerDb = customerService.modifyCustomer(customer);
+        return new ResponseEntity<>(customerDb, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{customerId}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable int customerId) {
+
+        Customer customer = customerService.getCustomer(customerId);
+        if (customer == null)
+            throw new CustomerNotFoundException("Cannot delete user. Customer not found");
+        customerService.deleteCustomer(customerId);
+        return new ResponseEntity<>(String.format("user deleted: %d - %s", customerId, customer.getEmail()), HttpStatus.OK);
     }
 
 }
