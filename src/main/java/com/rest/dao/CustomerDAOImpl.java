@@ -38,9 +38,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Transactional
     public Customer getCustomer(int id) {
         Session session = sessionFactory.getCurrentSession();
-        Customer customer = session.get(Customer.class, id);
-
-        return customer;
+        return session.get(Customer.class, id);
     }
 
     @Override
@@ -54,12 +52,11 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     @Transactional
-    public Customer modifyCustomer(int id) {
+    public Customer modifyCustomer(Customer customer) {
         Session session = sessionFactory.getCurrentSession();
-        Customer customerDb = getCustomer(id);
-        if (customerDb != null)
-            session.update(customerDb);
+        if (customer != null)
+            session.update(customer);
 
-        return customerDb;
+        return customer;
     }
 }
